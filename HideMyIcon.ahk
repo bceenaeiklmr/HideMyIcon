@@ -31,19 +31,20 @@ hmi := new HideMyIcon()
 ; #############################################################################
 
 SleeptimeText := "The elapsed time between two animation frames in ms" . "`n`n"
-			. "Recommended sleep between 15 and 50." "`n"
-			. "0,-1, no sleep." "`n"
+	       . "Recommended sleep between 15 and 50." "`n"
+	       . "0,-1, no sleep." "`n"
 
 EffectText := [ "256 frames, transparency: 0,1,2,3,4,5 ..." 
-		    , "87 frames, transparency: 0,3,6,9,12,15, ..."
-		    , "52 frames, transparency: 0,5,10,15,20,25, ..."
-		    , "18 frames, transparency: 0,15,30,45,60,75, ..."
-		    , "16 frames, transparency: 0,17,34,51,68,85, ..."
-		    , "6 frames, transparency: 0,51,102,153,204,255"
-		    , "4 frames, transparency: 0,85,170,255"
-		    , "2 frames, instant, on-off, transparency: 0,255" ] 
+	      , "87 frames, transparency: 0,3,6,9,12,15, ..."
+	      , "52 frames, transparency: 0,5,10,15,20,25, ..."
+	      , "18 frames, transparency: 0,15,30,45,60,75, ..."
+	      , "16 frames, transparency: 0,17,34,51,68,85, ..."
+	      , "6 frames, transparency: 0,51,102,153,204,255"
+	      , "4 frames, transparency: 0,85,170,255"
+	      , "2 frames, instant, on-off, transparency: 0,255" ] 
 
-HoverText := { 1 : "The effect starts when you hover over the desktop.", 0 : "The effect starts when you click on the desktop." }
+HoverText := { 1 : "The effect starts when you hover over the desktop."
+             , 0 : "The effect starts when you click on the desktop." }
 
 ; create the main gui
 gui, Settings:new
@@ -342,9 +343,9 @@ previewDuration := ( hmi.frames.length() - 1 ) * ( sleepslider < 15 ? 15 : sleep
 if ( previewDuration * 2 > 10000 )
 {
 	msgbox, 0x4, % " HideMyIcon", % "The preview will take about " 
-							    . format( "{:.2f}", previewDuration * 2 / 1000 ) " seconds.`n`n"
-							    . "Do you want to continue?"
-	ifmsgBox, No
+				      . format( "{:.2f}", previewDuration * 2 / 1000 ) " seconds.`n`n"
+				      . "Do you want to continue?"
+	ifmsgBox, no
 		return
 }
 ; start the preview anim
