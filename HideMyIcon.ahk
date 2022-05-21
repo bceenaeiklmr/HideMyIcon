@@ -91,10 +91,18 @@ return
 
 ; The only hotkey is needed for detecting the show desktop button in the tray.
 ; The left button behaves normally, except it activates the destop.
+; If the icons are hidden and you click on one of them the desktop will not be activated and the animation will not start.
+; As a workaround the desktop can be activated.
 
 ~Lbutton::
-if ( A_TimeSinceThisHotkey < 100 )
-	hmi.isMouseOverShowDeskButton()
+if ( hmi.classUnderMouse() = "Desktop" && !hmi.isMouseOverShowDeskButton() )
+{
+	winActivate, % "ahk_id" hmi.hdesk
+	winWaitActive, % "ahk_id" hmi.hdesk
+	sleep, 50
+	click, 1
+}
+	
 return
 
 ; #############################################################################
@@ -249,19 +257,17 @@ class HideMyIcon {
 		coordMode, mouse, screen
 		mousegetPos, Mousex, Mousey	
 		coordMode, mouse, % oldMode
-		
-		; if the icons are hidden and you click on one of them the desktop will not be activated and the animation will not start
-		; as a workaround the desktop can be activated
-		
-		if ( Mousex >= A_screenWidth  - AreaWidth )
-		&& ( Mousey >= A_screenHeight - AreaHeight )
+				
+		if ( Mousex >= A_screenWidth  - AreaWidth
+		&&   Mousey >= A_screenHeight - AreaHeight )
 		&& ( regExMatch( this.classUnderMouse(), "Desktop|Tray" ) )
 		&& ( this.ShowOn = "Click" )
-		&& ( !winActive( "ahk_id" this.hdesk ) ) ; "Program Manager ahk_class Progman ahk_exe Explorer.EXE"
+		&& ( !winActive( "ahk_id" this.hdesk ) ; 
 		{
 			winActivate, % "ahk_id" this.hdesk
 			;a short delay is required until the window will be minimized
 			sleep, 300
+			return 1
 		}
 		
 	}
