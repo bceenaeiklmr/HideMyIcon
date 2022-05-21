@@ -71,18 +71,17 @@ gui, Settings:Add, text, % "x20 y280 w260 vHoverText"
 guicontrol,, hovertext, % hoverText[hmi.Hover]
 guicontrol,, effectonhover, % hmi.Hover
 ; buttons
-
 gui, Settings:Add, Button, % "x110 y310 w80", % "&Preview"
 gui, Settings:Add, Button, % " x20 y340 w80", % "&Apply"
 gui, Settings:Add, Button, % "x200 y340 w80", % "&Default"
 gui, Settings:Add, Button, % "x110 y340 w80", % "&To tray"
 ; show options
 gui, Settings:Show, % "w300 h370", % "HideMyIcon"
-
+; tray show gui
 menu, tray, Standard
 menu, tray, Add
 menu, tray, Add, Show &GUI, showgui
-
+; exit func
 onExit( "restoreicon" )
 
 return
