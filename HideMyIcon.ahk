@@ -43,8 +43,7 @@ EffectText := [ "256 frames, transparency: 0,1,2,3,4,5 ..."
 	      , "4 frames, transparency: 0,85,170,255"
 	      , "2 frames, instant, on-off, transparency: 0,255" ] 
 
-HoverText := { 1 : "The effect starts when you hover over the desktop."
-             , 0 : "The effect starts when you click on the desktop." }
+HoverText := { 1 : "The effect starts when you hover over the desktop.", 0 : "The effect starts when you click on the desktop." }
 
 ; create the main gui
 gui, Settings:new
@@ -76,13 +75,15 @@ guicontrol,, effectonhover, % hmi.Hover
 gui, Settings:Add, Button, % "x110 y310 w80", % "&Preview"
 gui, Settings:Add, Button, % " x20 y340 w80", % "&Apply"
 gui, Settings:Add, Button, % "x200 y340 w80", % "&Default"
-gui, Settings:Add, Button, % "x110 y340 w80", % "&Totray"
+gui, Settings:Add, Button, % "x110 y340 w80", % "&To tray"
 ; show options
 gui, Settings:Show, % "w300 h370", % "HideMyIcon"
 
 menu, tray, Standard
 menu, tray, Add
 menu, tray, Add, Show &GUI, showgui
+
+onExit( "restoreicon" )
 
 return
 
@@ -92,7 +93,8 @@ return
 ; The left button behaves normally, except it activates the destop.
 
 ~Lbutton::
-hmi.isMouseOverShowDeskButton()
+if ( A_TimeSinceThisHotkey < 100 )
+	hmi.isMouseOverShowDeskButton()
 return
 
 ; #############################################################################
@@ -118,8 +120,6 @@ class HideMyIcon {
 		
 		fn := objBindMethod( this, "Fade" )
 		this.fadefn := fn
-		
-		onexit( objBindMethod( this, "restoreicons" ) )
 		
 		this.start()
 		
@@ -201,14 +201,21 @@ class HideMyIcon {
 			; load the frames
 			this.frames := this.effect.linear[effectspeed]		
 		}
-		else if ( effect = "exponential" )
+		else if ( effect = "2pow" )
 		{
 			; not really smooth tbh :(
-			this.effect.exponential := [0]
+			this.effect.2pow := [0]
 			loop 8
-				this.effect.exponential.push( ( 2 ** A_index ) )
-			--this.effect.exponential[9]	
-			this.frames := this.effect.exponential
+				this.effect.2pow.push( ( 2 ** A_index ) )
+			--this.effect.2pow[9]	
+			this.frames := this.effect.2pow
+		}
+		else if ( effect = "exponential" )
+		{
+			exponential := []
+			while ( exponential[exponential.length()] != 2**8-1 )
+				exponential.push(A_index**2-1)
+			this.frames := exponential
 		}
 		
 		; locate the actual frame
@@ -227,16 +234,6 @@ class HideMyIcon {
 		controlGet, hIcon, hwnd,, SysListView321, % "ahk_id" hDesk
 		this.hdesk := hdesk
 		this.hicon := hicon
-	}
-	
-	setPriority( processpriority )
-	{
-		; set process priority, Normal, AboveNormal are allowed only
-		if ( processpriority ~= "i)^A(boveNormal)?$|^N(ormal)?$" )
-		{
-			pidscript := dllCall( "GetCurrentProcessId" )
-			process, priority, % pidscript, % processpriority
-		}
 	}
 	
 	classUnderMouse()
@@ -264,7 +261,7 @@ class HideMyIcon {
 		{
 			winActivate, % "ahk_id" this.hdesk
 			;a short delay is required until the window will be minimized
-			sleep, 200 ; 100
+			sleep, 300
 		}
 		
 	}
@@ -275,26 +272,38 @@ class HideMyIcon {
 		if !fileExist( this.iniFile )
 		{
 			fileAppend, % "", % this.inifile
-			_Sleeptime := 20
+			_Sleeptime   := 20
 			_EffectSpeed := 2
-			_Hover := 0
+			_Hover       := 0
 			; create default keys and values
 			iniWrite, % _Sleeptime,   % this.inifile, % "settings", % "sleeptime"
 			iniWrite, % _EffectSpeed, % this.inifile, % "settings", % "effectspeed"
-			iniWrite, % _Hover, % this.inifile, % "settings", % "hover"
+			iniWrite, % _Hover,       % this.inifile, % "settings", % "hover"
 		}
 		iniRead, _Sleeptime,   % this.inifile, % "settings", % "sleeptime"
 		iniRead, _EffectSpeed, % this.inifile, % "settings", % "effectspeed"
-		iniRead, _Hover, % this.inifile, % "settings", % "hover"
+		iniRead, _Hover,       % this.inifile, % "settings", % "hover"
 		this.effectspeed := _EffectSpeed
 		this.effectdelay := _Sleeptime
 		this.hover       := _Hover
 	}
 	
-	RestoreIcon()
+	setPriority( processpriority )
 	{
-		winSet,  % "transparent", 255, % "ahk_id" this.hIcon
-	}	
+		; set process priority, Normal, AboveNormal are allowed only
+		if ( processpriority ~= "i)^A(boveNormal)?$|^N(ormal)?$" )
+		{
+			pidscript := dllCall( "GetCurrentProcessId" )
+			process, priority, % pidscript, % processpriority
+		}
+	}
+	
+}
+
+RestoreIcon()
+{
+	global
+	winSet,  % "transparent", 255, % "ahk_id" hmi.hIcon
 }
 
 ; #############################################################################
@@ -304,8 +313,8 @@ class HideMyIcon {
 SettingsButtonApply:
 gui, submit, nohide
 ; write the new settings
-iniWrite, % effectslider, % hmi.inifile, % "settings", % "effectspeed"
-iniWrite, % sleepslider,  % hmi.inifile, % "settings", % "sleeptime"
+iniWrite, % effectslider,  % hmi.inifile, % "settings", % "effectspeed"
+iniWrite, % sleepslider,   % hmi.inifile, % "settings", % "sleeptime"
 iniWrite, % effectOnHover, % hmi.inifile, % "settings", % "hover"
 ; turn off the current timer
 fn := hmi.fadeFn
@@ -343,9 +352,9 @@ previewDuration := ( hmi.frames.length() - 1 ) * ( sleepslider < 15 ? 15 : sleep
 if ( previewDuration * 2 > 10000 )
 {
 	msgbox, 0x4, % " HideMyIcon", % "The preview will take about " 
-				      . format( "{:.2f}", previewDuration * 2 / 1000 ) " seconds.`n`n"
-				      . "Do you want to continue?"
-	ifmsgBox, no
+		                      . format( "{:.2f}", previewDuration * 2 / 1000 ) " seconds.`n`n"
+		                      . "Do you want to continue?"
+	ifmsgBox, No
 		return
 }
 ; start the preview anim
@@ -383,14 +392,14 @@ ifmsgBox yes
 	vsleepslider  := 25
 	vhover        := 0
 	iniWrite, % veffectslider, hmi.inifile, % "settings", % "effectspeed" 
-	iniWrite, % vsleepslider, hmi.inifile, % "settings", % "sleeptime"
-	iniWrite, % vhover, hmi.inifile, % "settings", % "hover"
-	guiControl,, EffectSlider, % veffectslider
-	guiControl,, EffectUpdown, % veffectslider
-	guiControl,, EffectText, % FadeEffectText[veffectslider]
-	guiControl,, SleepSlider, % vSleepSlider
-	guiControl,, SleepUpDown, % vSleepSlider
-	guicontrol,, hovertext, % hoverText[vhover]
+	iniWrite, % vsleepslider,  hmi.inifile, % "settings", % "sleeptime"
+	iniWrite, % vhover,        hmi.inifile, % "settings", % "hover"
+	guiControl,, EffectSlider,  % veffectslider
+	guiControl,, EffectUpdown,  % veffectslider
+	guiControl,, EffectText,    % FadeEffectText[veffectslider]
+	guiControl,, SleepSlider,   % vSleepSlider
+	guiControl,, SleepUpDown,   % vSleepSlider
+	guicontrol,, hovertext,     % hoverText[vhover]
 	guicontrol,, effectonhover, % hmi.Hover
 	
 	; off preview timer
@@ -441,6 +450,8 @@ gui, %HwndSettings%: hide
 return
 
 ; #############################################################################
+
+; high precision sleep, high cpu usage
 
 preciseSleep( ms := 10 )
 {
