@@ -9,7 +9,7 @@ Autohotkey script to auto hide your icons in Windows 10.
 - eight different effect detail options
 - sleep duration can be set between two transparency states
 - hover/click mode to trigger the effect
-- hidden icon is clickable and the animation starts
+- the hidden icon is clickable and the animation starts
 - show desktop button should work properly by now
 - ini files to remember settings
 - preview, minimize to tray
