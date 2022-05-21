@@ -71,17 +71,18 @@ gui, Settings:Add, text, % "x20 y280 w260 vHoverText"
 guicontrol,, hovertext, % hoverText[hmi.Hover]
 guicontrol,, effectonhover, % hmi.Hover
 ; buttons
+
 gui, Settings:Add, Button, % "x110 y310 w80", % "&Preview"
 gui, Settings:Add, Button, % " x20 y340 w80", % "&Apply"
 gui, Settings:Add, Button, % "x200 y340 w80", % "&Default"
 gui, Settings:Add, Button, % "x110 y340 w80", % "&To tray"
 ; show options
 gui, Settings:Show, % "w300 h370", % "HideMyIcon"
-; tray show gui
+
 menu, tray, Standard
 menu, tray, Add
 menu, tray, Add, Show &GUI, showgui
-; exit func
+
 onExit( "restoreicon" )
 
 return
@@ -101,7 +102,6 @@ if ( hmi.classUnderMouse() = "Desktop" && !hmi.isMouseOverShowDeskButton() )
 	sleep, 50
 	click, 1
 }
-	
 return
 
 ; #############################################################################
@@ -129,7 +129,6 @@ class HideMyIcon {
 		this.fadefn := fn
 		
 		this.start()
-		
 		init := this
 	}
 	
@@ -181,7 +180,6 @@ class HideMyIcon {
 			winSet, % "transparent", % this.frames[(this.framekey+=frame)], % "ahk_id" this.hIcon
 			this.sleepfn.call( this.effectdelay )
 		}	
-		
 	}
 	
 	getFrames( effect, effectspeed )
@@ -256,19 +254,18 @@ class HideMyIcon {
 		coordMode, mouse, screen
 		mousegetPos, Mousex, Mousey	
 		coordMode, mouse, % oldMode
-				
-		if ( Mousex >= A_screenWidth  - AreaWidth
-		&&   Mousey >= A_screenHeight - AreaHeight )
+		
+		if ( Mousex >= A_screenWidth  - AreaWidth )
+		&& ( Mousey >= A_screenHeight - AreaHeight )
 		&& ( regExMatch( this.classUnderMouse(), "Desktop|Tray" ) )
 		&& ( this.ShowOn = "Click" )
-		&& ( !winActive( "ahk_id" this.hdesk ) ; 
+		&& ( !winActive( "ahk_id" this.hdesk )) ; 
 		{
 			winActivate, % "ahk_id" this.hdesk
 			;a short delay is required until the window will be minimized
 			sleep, 300
 			return 1
 		}
-		
 	}
 	
 	Ini()
@@ -406,7 +403,6 @@ ifmsgBox yes
 	guiControl,, SleepUpDown,   % vSleepSlider
 	guicontrol,, hovertext,     % hoverText[vhover]
 	guicontrol,, effectonhover, % hmi.Hover
-	
 	; off preview timer
 	fn := hmi.fadeFn
 	settimer, % fn, off
