@@ -1,9 +1,5 @@
 # HideMyIcon
 
-<p align="left">
-  <img src="https://user-images.githubusercontent.com/105103590/169697171-7bcb4a39-32b9-4443-97ce-bee532d49e41.png">
-</p>
-
 HideMyIcon is an Autohotkey script to auto hide the desktop icons in Windows 10.
 
 *( maybe it will work on other versions )*
