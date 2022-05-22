@@ -1,6 +1,10 @@
 # HideMyIcon
 
-Autohotkey script to auto hide your icons in Windows 10.
+<p align="left">
+  <img src="https://user-images.githubusercontent.com/105103590/169697171-7bcb4a39-32b9-4443-97ce-bee532d49e41.png">
+</p>
+
+HideMyIcon is an Autohotkey script to auto hide your icons in Windows 10.
 
 ## Features
 
@@ -19,7 +23,7 @@ Autohotkey script to auto hide your icons in Windows 10.
 - ahk file  [HideMyIcon.ahk](https://github.com/bceenaeiklmr/HideMyIcon/blob/main/HideMyIcon.ahk)
 - exe file: [HideMyIcon.zip](https://github.com/bceenaeiklmr/HideMyIcon/files/8749432/HideMyIcon.zip)
 
-The script will create an ini file, you can move the files to another folder later.
+The script will create an ini file, you can move the files to another folder.
 
 ## Youtube video
 
