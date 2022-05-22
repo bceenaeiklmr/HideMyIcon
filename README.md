@@ -14,6 +14,17 @@ Autohotkey script to auto hide your icons in Windows 10.
 - ini files to remember settings
 - preview, minimize to tray
 
+## Download
+
+- ahk file  [HideMyIcon.ahk](https://github.com/bceenaeiklmr/HideMyIcon/blob/main/HideMyIcon.ahk)
+- exe file: [HideMyIcon.zip](https://github.com/bceenaeiklmr/HideMyIcon/files/8749432/HideMyIcon.zip)
+
+The script will create an ini file, you can move the files to another folder later.
+
+## Youtube video
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/uZNI1G8OB9M/0.jpg)](https://www.youtube.com/watch?v=uZNI1G8OB9M)
+
 ## Screenshot
 
 ![HideMyIcon_1](https://user-images.githubusercontent.com/105103590/169664466-30dcdc57-1281-4bfb-9d3e-17693c1f7cf6.PNG)
