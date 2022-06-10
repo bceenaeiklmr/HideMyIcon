@@ -1,8 +1,8 @@
 # HideMyIcon
 
-HideMyIcon is an Autohotkey script to auto hide the desktop icons in Windows 10.
+HideMyIcon is an Autohotkey script to auto-hide the desktop icons in Windows 10. It also offers a customizable fading effect.
 
-*( maybe it will work on other versions )*
+*( does not work properly on Windows 11 )*
 
 ## Features
 
@@ -34,4 +34,4 @@ A short video how does it look like in real time.
 
 ## Bugs
 
-Please note, I only tested it on one computer so far, bugs may occur.
+Please note that I only tested it on one computer so far. Bugs may occur.
