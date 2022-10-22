@@ -1,486 +1,191 @@
+; Script     HideMyIcon.ahk
+; License:   MIT License
+; Author:    Bence Markiel (bceenaeiklmr)
+; Github:    https://github.com/bceenaeiklmr/HideMyIcon
+; Date       22.10.2022
+; Version    0.0.2
 
-; #############################################################################
+#SingleInstance, Force
+#Persistent
+SetBatchLines, -1
+SetWindelay, -1
+SetWorkingDir, %A_scriptDir%
 
-; Enjoy customizing!
+global HMI := new HideMyIcon()
 
-; #############################################################################
+SleepText := "Sleep in fade effect (ms)" "`n`n"
+	   . "Recommended: between 15 and 50" "`n"
+	   . "0,-1, no sleep" "`n"
 
-;   Thank you!
-;
-; + SKAN DesktopIcons
-; + EvilC LogTailerClass
-; + anonymous1184
-; + 0xB0BAFE77
-; + G33kDude
-; + errorseven
-; + Maestrith AHK Studio
-; + every Autohotkey contributor
+EffectText := [ "256 frames, transp: 0,1,2,3,4,5 ..."
+	      , "87 frames, transp: 0,3,6,9,12,15, ..."
+	      , "52 frames, transp: 0,5,10,15,20,25, ..."
+	      , "18 frames, transp: 0,15,30,45,60,75, ..."
+	      , "16 frames, transp: 0,17,34,51,68,85, ..."
+	      , "6 frames, transp: 0,51,102,153,204,255"
+	      , "4 frames, transp: 0,85,170,255"
+	      , "2 frames, instant, on-off, transp: 0,255" ]
 
-; #############################################################################
+HoverText := { 0 : "The effect starts when you click on the desktop."
+             , 1 : "The effect starts when you hover over the desktop." }
 
-#singleInstance, force
-#persistent
-setBatchLines, -1      			
-setWindelay, -1    
-setWorkingDir, %A_scriptDir%
-
-; #############################################################################
-
-hmi := new HideMyIcon()
-
-; #############################################################################
-
-SleeptimeText := "The elapsed time between two animation frames in ms" . "`n`n"
-	       . "Recommended sleep between 15 and 50." "`n"
-	       . "0,-1, no sleep." "`n"
-
-EffectText := [ "256 frames, transparency: 0,1,2,3,4,5 ..." 
-	      , "87 frames, transparency: 0,3,6,9,12,15, ..."
-	      , "52 frames, transparency: 0,5,10,15,20,25, ..."
-	      , "18 frames, transparency: 0,15,30,45,60,75, ..."
-	      , "16 frames, transparency: 0,17,34,51,68,85, ..."
-	      , "6 frames, transparency: 0,51,102,153,204,255"
-	      , "4 frames, transparency: 0,85,170,255"
-	      , "2 frames, instant, on-off, transparency: 0,255" ] 
-
-HoverText := { 1 : "The effect starts when you hover over the desktop.", 0 : "The effect starts when you click on the desktop." }
-
-; create the main gui
-gui, Settings:new
-gui, Settings:+hwndHwndSettings
-gui, Settings:Font, s7
-; animation slider
-gui, Settings:Add, text,   % "x10 y20 w230", % "Animation"
-gui, Settings:Add, Slider, % "x10 y40 w230 vEffectSlider Range1-8 gSliderEffect", % hmi.EffectSpeed  ; ToolTipBottom
-; animation updown
-gui, Settings:Add, Edit, % "x250 y40 w40"
-gui, Settings:Add, UpDown, % "vEffectUpDown Range1-8 gUpDownEffectSpeed", % hmi.EffectSpeed
-; animation description text
-gui, Settings:Add, text, % "x20 w280 vEffectText", % EffectText[hmi.EffectSpeed] ;Default 4, 1 fastest, 8 slowest
-; sleeptime slider text
-gui, Settings:Add, text, % "x10 w230", % "`n" "Sleeptime"
-; sleeptime slider
-gui, Settings:Add, Slider, % "x10 y145 w230 vSleepSlider Range-1-100 gSliderSleep", % hmi.effectdelay
-; sleeptime updown
-gui, Settings:Add, Edit, % "x250 y145 w40" 
-gui, Settings:Add, UpDown, % "vSleepUpDown Range-1-100 gUpDownSleeptime", % hmi.effectdelay
-gui, Settings:Add, text, % "x20 vSleepText", % SleeptimeText
-; hover or click
-gui, Settings:Add, CheckBox, % "x20 y260 vEffectOnHover gOnHover", % "Effect on hover?"
-gui, Settings:Add, text, % "x20 y280 w260 vHoverText"
-guicontrol,, hovertext, % hoverText[hmi.Hover]
-guicontrol,, effectonhover, % hmi.Hover
-; buttons
-
-gui, Settings:Add, Button, % "x110 y310 w80", % "&Preview"
-gui, Settings:Add, Button, % " x20 y340 w80", % "&Apply"
-gui, Settings:Add, Button, % "x200 y340 w80", % "&Default"
-gui, Settings:Add, Button, % "x110 y340 w80", % "&To tray"
-; show options
-gui, Settings:Show, % "w300 h370", % "HideMyIcon"
-
-menu, tray, Standard
-menu, tray, Add
-menu, tray, Add, Show &GUI, showgui
-
-onExit( "restoreicon" )
-
+; Main Gui
+Gui, Settings:New
+Gui, Settings:+hwndHwndSettings
+Gui, Settings:Font, s7
+; Animation slider
+Gui, Settings:Add, text,     % "x10 y20 w230", % "Animation"
+Gui, Settings:Add, Slider,   % "x10 y40 w230 vEffectSlider Range1-8 gSliderEffect", % HMI.Speed
+; Animation updown
+Gui, Settings:Add, Edit,     % "x250 y40 w40"
+Gui, Settings:Add, UpDown,   % "vEffectUpDown Range1-8 gUpDownEffectSpeed", % HMI.Speed
+; Animation desc text
+Gui, Settings:Add, text,     % "x20 w280 vEffectText", % EffectText[HMI.iniSpeed]
+; Sleeptime slider text
+Gui, Settings:Add, text,     % "x10 w230", % "`n" "Sleeptime"
+; Sleeptime slider
+Gui, Settings:Add, Slider,   % "x10 y145 w230 vSleepSlider Range-1-100 gSliderSleep", % HMI.Sleep
+; Sleeptime updown
+Gui, Settings:Add, Edit,     % "x250 y145 w40" 
+Gui, Settings:Add, UpDown,   % "vSleepUpDown Range-1-100 gUpDownSleeptime", % HMI.Sleep
+Gui, Settings:Add, text,     % "x20 vSleepText", % SleepText
+; Hover or click
+Gui, Settings:Add, CheckBox, % "x20 y260 vHover gHover Checked" (Hover:=HMI.Hover=1?1:0) , % "Effect starts on hover?"
+Gui, Settings:Add, text,     % "x20 y280 w260 vHoverText"
+; Buttons
+Gui, Settings:Add, Button,   % "x100 y310 w100", % "&Save"
+; load from ini
+GuiControl,, EffectSlider, % HMI.IniSpeed
+GuiControl,, EffectUpDown, % HMI.IniSpeed
+GuiControl,, SleepSlider,  % HMI.Sleep
+GuiControl,, SleepUpDown,  % HMI.Sleep
+Guicontrol,, HoverText,    % HoverText[HMI.Hover]
+Gui, submit
+; Show options
+Gui, Settings:Show, % "w300 h350", % "HideMyIcon"
+Menu, Tray, Standard
+Menu, Tray, Add
+Menu, Tray, Add, Show &GUI, ShowGui
 return
 
-; #############################################################################
-
-; The only hotkey is needed for detecting the show desktop button in the tray.
-; The left button behaves normally, except it activates the destop.
-; If the icons are hidden and you click on one of them the desktop will not be activated and the animation will not start.
-; As a workaround the desktop can be activated.
-
-~Lbutton::
-if ( hmi.classUnderMouse() = "Desktop" && !hmi.isMouseOverShowDeskButton() )
-{
-	winActivate, % "ahk_id" hmi.hdesk
-	winWaitActive, % "ahk_id" hmi.hdesk
-	sleep, 50
-	click, 1
-}
-return
-
-; #############################################################################
+; ######################
 
 class HideMyIcon {
 	
-	__New( effect := "linear", effectspeed := 1, effectDelay := 33, precisionsleep := 0, processpriority := "AboveNormal", showOn := "hover" )
-	{	
-		static init
-		if init
-			return init
-		
-		this.getHandle()
-		this.ini()
-		this.setPriority( processpriority )
-		
-		this.getframes( effect, this.effectspeed )
-		this.sleepfn := func( ( precisionsleep ? "preciseSleep" : "Sleep" ) )
-		this.ShowOn := ( this.hover = 1 ? "Hover" : ( this.hover = 0 ? "Click" : "" ) )
-		
-		winGet, transparency, % "transparent", % "ahk_id" this.hIcon
-		this.transparency := transparency
-		
-		fn := objBindMethod( this, "Fade" )
-		this.fadefn := fn
-		
-		this.start()
-		init := this
-	}
-	
-	Start()
-	{
-		fn := this.FadeFn
-		setTimer, % fn, 10
-	}
-	
-	Off()
-	{
-		fn := this.FadeFn
-		setTimer, % fn, off
-		this.RestoreIcon()
-	}
-	
-	Pause()
-	{
-		static s
-		fn := this.FadeFn
-		setTimer, % fn, % s := ( !s || s = "Off" ) ? 10 : ( s = 10 ? "Off" : "" )
-	}
-	
-	Fade()
-	{	
-		isDeskActive  := winActive( "ahk_id" this.hDesk )
-		isTrayActive  := winActive( "ahk_class Shell_TrayWnd" )
-		
-		; the frame indicates whether to change the transparency of the icons or just do nothing
-		if ( this.ShowOn = "Click" )
-			frame := ( isDeskActive || isTrayActive ) ? 1 : ( ! isDeskActive && ! isTrayActive ? -1 : "" )
-		else if ( this.ShowOn = "Hover" )
-			frame := ( this.classUnderMouse() ? 1 : -1 )
-		
-		; if show desktop button is pressed the active title will be empty for a short amount of time
-		if ( ! frame && this.ShowOn = "Click" )
-		{
-			winGetTitle, activeTitle
-			winGetClass, activeClass
-			if ( activeTitle = "" && activeClass ~= "Progman|WorkerW|Tray" )
-				frame := 1
-		}
-		
-		if !frame
+	Fade() {
+		Desk := winActive( "ahk_id" this.hDesk ),
+		Tray := winActive( "ahk_class Shell_TrayWnd" )		
+		if !this.Hover
+			step := (Desk||Tray) ? 1 : -1 ; (Desk) ? 1 : 0 -> clickink on the taskbar will not trigger the effect
+		else if this.Hover
+			step := (this.getMouse() ? 1 : -1)
+		if (this.getMouse()~="ShowDesk|Tray")
+			step := 1
+		winGet, Transparent, Transparent, % "ahk_id" this.hIcon
+		if (this.transparent+(step:=step*this.speed)=Transparent)
+		|| (this.transparent+step>255||0>this.transparent+step)
 			return
-		else if this.frames.hasKey( this.framekey + frame )
-		{	
-			;critical, 30
-			winSet, % "transparent", % this.frames[(this.framekey+=frame)], % "ahk_id" this.hIcon
-			this.sleepfn.call( this.effectdelay )
-		}	
+		winSet, % "Transparent", % ((this.transparent+=step)==0?1:this.transparent), % "ahk_id" . this.hIcon
+		Sleep, % this.Sleep
+		;tooltip(step "`n" transp "`n" this.speed "`n" this.mode)
 	}
-	
-	getFrames( effect, effectspeed )
-	{
-		if !this.effect
-			this.effect := {}
-		
-		if ( effect = "linear" )
-		{
-			this.effect.linear := []
+
+	getMouse() {
+		MouseGetPos,,, id, ctrl
+		WinGetClass, cls, % "ahk_id" id
+		WinGetTitle, w, % "ahk_id" id
+		return ((Ctrl~="TrayShowDesktopButton" && cls~="Shell_TrayWnd")
+		     || (cls~="Progman|WorkerW" && w=="") ? "ShowDesk"
+		      : (cls~="Progman|WorkerW") ? "Desktop"
+		      : (cls~="Shell_TrayWnd") ? "Taskbar"
+		      : (cls~="DFTaskbar") ? "DisplayFusion" : "") ; DF taskbar
+	}
 			
-			; find n between 0-255 where !mod( 255, n ), basically: 1,3,5,15,17,51,85,255
-			while ( ( !n ? n := 1 : n++ ) != 256 )
-				( !mod( 255, n ) ) ? this.effect.linear.push( n ) : ""
+	__New() {	
+		if !this.hDesk := winExist("ahk_class Progman") ; credit to SKAN
+		    this.hDesk := winExist("ahk_class WorkerW")
+		ControlGet, hIcon, hWnd,, SysListView321, % "ahk_id" this.hDesk
+		this.hIcon := hIcon
+		this.Ini()
+		; AboveNormal priority makes the animation smoother for me
+		Process, Priority, % "ahk_id" this.hDesk, AboveNormal 
+		fn := ObjBindMethod(this, "Fade")
+		this.fn := fn
+		SetTimer, % fn, 10
+		OnExit(objBindMethod(this, "RestoreIcons"))
+	}
+
+	Ini() {
+		if !fileExist((this.cfg := A_ScriptDir "\" strSplit(A_ScriptName, ".").1 ".ini")) {
+			fileAppend,,  % this.cfg 			
+			IniWrite, 20, % this.cfg, % "Settings", % "Sleep"
+			IniWrite, 5,  % this.cfg, % "Settings", % "Speed"
+			IniWrite, 0,  % this.cfg, % "Settings", % "Hover"
+		}
+		IniRead, Sleep, % this.cfg, % "Settings", % "Sleep"
+		IniRead, Speed, % this.cfg, % "Settings",  % "Speed"
+		IniRead, Hover,  % this.cfg, % "Settings", % "Hover"
+		this.iniSpeed := Speed,
+		this.Speed := [1,3,5,15,17,51,85,255][Speed],
+		this.Sleep := Sleep,
+		this.Hover := Hover,
+		this.Transparent := 255
+	}
+
+	RestoreIcons() {
+		WinSet, Transparent, 255, % "ahk_id" this.hIcon
+	}
 			
-			; fill the transparent values
-			for k, step in this.effect.linear
-			{
-				this.effect.linear[k] := [0]
-				loop % ( 255 / step )
-					this.effect.linear[k][A_index+1] := A_index * step
-			}
-			
-			; load the frames
-			this.frames := this.effect.linear[effectspeed]		
-		}
-		else if ( effect = "2pow" )
-		{
-			; not really smooth tbh :(
-			this.effect.2pow := [0]
-			loop 8
-				this.effect.2pow.push( ( 2 ** A_index ) )
-			--this.effect.2pow[9]	
-			this.frames := this.effect.2pow
-		}
-		else if ( effect = "exponential" )
-		{
-			exponential := []
-			while ( exponential[exponential.length()] != 2**8-1 )
-				exponential.push(A_index**2-1)
-			this.frames := exponential
-		}
-		
-		; locate the actual frame
-		winGet, transp, transparent, % "ahk_id" this.hdesk
-		( !transp ) ? transp := 0 : ""			
-			; if found set it
-		for k, v in this.frames
-			if ( v = transp )
-				this.framekey := k	
-	}
-	
-	getHandle()
-	{
-		if ! hDesk := winExist( "ahk_class Progman" )
-			hDesk := winExist( "ahk_class WorkerW" )
-		controlGet, hIcon, hwnd,, SysListView321, % "ahk_id" hDesk
-		this.hdesk := hdesk
-		this.hicon := hicon
-	}
-	
-	classUnderMouse()
-	{		
-		MouseGetPos, x, y, WinUnderMouse ; 
-		WinGetClass, className, % "ahk_id" WinUnderMouse
-		return ( className ~= "Progman|WorkerW" ? "Desktop" : ( className ~= "Shell_TrayWnd" ? "Tray" : 0 ) )
-	}
-	
-	isMouseOverShowDeskButton( AreaWidth := 5, AreaHeight := 40 )
-	{			
-		oldMode := A_coordModeMouse
-		coordMode, mouse, screen
-		mousegetPos, Mousex, Mousey	
-		coordMode, mouse, % oldMode
-		
-		if ( Mousex >= A_screenWidth  - AreaWidth )
-		&& ( Mousey >= A_screenHeight - AreaHeight )
-		&& ( regExMatch( this.classUnderMouse(), "Desktop|Tray" ) )
-		&& ( this.ShowOn = "Click" )
-		&& ( !winActive( "ahk_id" this.hdesk )) ; 
-		{
-			winActivate, % "ahk_id" this.hdesk
-			;a short delay is required until the window will be minimized
-			sleep, 300
-			return 1
-		}
-	}
-	
-	Ini()
-	{
-		this.inifile := A_ScriptDir "\" strSplit( A_ScriptName, "." )[1] ".ini"
-		if !fileExist( this.iniFile )
-		{
-			fileAppend, % "", % this.inifile
-			_Sleeptime   := 20
-			_EffectSpeed := 2
-			_Hover       := 0
-			; create default keys and values
-			iniWrite, % _Sleeptime,   % this.inifile, % "settings", % "sleeptime"
-			iniWrite, % _EffectSpeed, % this.inifile, % "settings", % "effectspeed"
-			iniWrite, % _Hover,       % this.inifile, % "settings", % "hover"
-		}
-		iniRead, _Sleeptime,   % this.inifile, % "settings", % "sleeptime"
-		iniRead, _EffectSpeed, % this.inifile, % "settings", % "effectspeed"
-		iniRead, _Hover,       % this.inifile, % "settings", % "hover"
-		this.effectspeed := _EffectSpeed
-		this.effectdelay := _Sleeptime
-		this.hover       := _Hover
-	}
-	
-	setPriority( processpriority )
-	{
-		; set process priority, Normal, AboveNormal are allowed only
-		if ( processpriority ~= "i)^A(boveNormal)?$|^N(ormal)?$" )
-		{
-			pidscript := dllCall( "GetCurrentProcessId" )
-			process, priority, % pidscript, % processpriority
-		}
-	}
-	
 }
 
-RestoreIcon()
-{
-	global
-	winSet,  % "transparent", 255, % "ahk_id" hmi.hIcon
-}
-
-; #############################################################################
-
-; Apply button
-
-SettingsButtonApply:
-gui, submit, nohide
-; write the new settings
-iniWrite, % effectslider,  % hmi.inifile, % "settings", % "effectspeed"
-iniWrite, % sleepslider,   % hmi.inifile, % "settings", % "sleeptime"
-iniWrite, % effectOnHover, % hmi.inifile, % "settings", % "hover"
-; turn off the current timer
-fn := hmi.fadeFn
-setTimer, % fn, off
-; select frames
-hmi.frames := hmi.effect.linear[effectslider]
-hmi.effectdelay := sleepslider
-; start the new timer
-fn := objBindMethod( hmi, "Fade" )
+SettingsButtonSave:
+Gui, Submit, Nohide
+IniWrite, % EffectSlider, % HMI.cfg, % "Settings", % "Speed"
+IniWrite, % (HMI.Sleep:=SleepSlider),  % HMI.cfg, % "Settings", % "Sleep"
+IniWrite, % (HMI.Hover:=Hover),  % HMI.cfg, % "Settings", % "Hover"
+HMI.Speed := [1,3,5,15,17,51,85,255][EffectSlider]
+fn := HMI.fn
+SetTimer, % fn, Delete
+fn := HMI.fn := ObjBindMethod(HMI, "Fade")
 settimer, % fn, 10
-tooltipfn := func( "settingstooltip" ).bind("The settings have been applied.")
-settimer, % tooltipfn, -1
+Tooltip("The settings have been applied.")
 return
-
-; #############################################################################
-
-; Preview button
-
-SettingsButtonPreview:
-gui, submit, noHide
-; save active settings
-oldframes := hmi.frames
-oldsleep  := hmi.effectdelay
-
-( hmi.hover ? hmi.ShowOn := "click" : "" )
-
-; turn of current timer
-fn := hmi.fadeFn
-settimer, % fn, off
-; get the new frames
-hmi.frames := hmi.effect.linear[effectslider]
-hmi.effectDelay := sleepslider
-; calculate rough dur
-previewDuration := ( hmi.frames.length() - 1 ) * ( sleepslider < 15 ? 15 : sleepslider )
-if ( previewDuration * 2 > 10000 )
-{
-	msgbox, 0x4, % " HideMyIcon", % "The preview will take about " 
-		                      . format( "{:.2f}", previewDuration * 2 / 1000 ) " seconds.`n`n"
-		                      . "Do you want to continue?"
-	ifmsgBox, No
-		return
-}
-; start the preview anim
-previewFn := objBindMethod( hmi, "Fade" )
-setTimer, % previewFn, 10
-;blockInput, on
-; activate the desktop
-winActivate, % "ahk_id" hmi.hDesk
-; wait until fade in end
-hmi.sleepfn.call( previewDuration )
-;sleep, % effectDur
-; activate gui
-winActivate, % "ahk_id" hwndSettings
-; wait until fade out ends
-sleep, % previewduration
-;blockinput off
-; off preview timer
-settimer, % previewFn, off
-( hmi.hover ? hmi.ShowOn := "hover" : "" )
-; restore original timer
-hmi.frames := oldframes
-hmi.effectDelay := oldsleep
-setTimer, % fn, 10	
-return
-
-; #############################################################################
-
-; Default button
-
-SettingsButtonDefault:
-msgbox, 0x4, % " HideMyIcon", % "Would you like to restore the default settings?"
-ifmsgBox yes
-{
-	veffectslider := 5
-	vsleepslider  := 25
-	vhover        := 0
-	iniWrite, % veffectslider, hmi.inifile, % "settings", % "effectspeed" 
-	iniWrite, % vsleepslider,  hmi.inifile, % "settings", % "sleeptime"
-	iniWrite, % vhover,        hmi.inifile, % "settings", % "hover"
-	guiControl,, EffectSlider,  % veffectslider
-	guiControl,, EffectUpdown,  % veffectslider
-	guiControl,, EffectText,    % FadeEffectText[veffectslider]
-	guiControl,, SleepSlider,   % vSleepSlider
-	guiControl,, SleepUpDown,   % vSleepSlider
-	guicontrol,, hovertext,     % hoverText[vhover]
-	guicontrol,, effectonhover, % hmi.Hover
-	; off preview timer
-	fn := hmi.fadeFn
-	settimer, % fn, off
-	; restore original timer
-	hmi.effectdelay := sleepslider
-	hmi.effect.linear[effectslider]
-	setTimer, % fn, 10
-	tooltipfn := func( "settingstooltip" ).bind("The default settings have been restored.")
-	settimer, % tooltipfn, -1
-} 
-return
-
-; #############################################################################
 
 UpDownEffectSpeed:
-guiControl,, EffectSlider, % EffectUpDown
-guiControl,, EffectText, % EffectText[EffectUpDown]
+GuiControl,, EffectSlider, % EffectUpDown
+GuiControl,, EffectText, % EffectText[EffectUpDown]
 return
 
 UpDownSleepTime:
-guiControl,, SleepSlider, % SleepUpDown
-; add text
+GuiControl,, SleepSlider, % SleepUpDown
 return
 
 SliderEffect:
-guicontrol,, EffectUpDown, % EffectSlider
-guiControl,, EffectText, % EffectText[EffectSlider]
+Guicontrol,, EffectUpDown, % EffectSlider
+GuiControl,, EffectText, % EffectText[EffectSlider]
 return
 
 SliderSleep:
-guicontrol,, SleepUpDown, % SleepSlider
+Guicontrol,, SleepUpDown, % SleepSlider
 return
 
-OnHover:
-gui, submit, noHide
-hmi.ShowOn := ( EffectOnHover ? "hover" : "click" )
-guicontrol,, hovertext, % hovertext[EffectOnHover]
+Hover:
+Guicontrol,, HoverText, % HoverText[(HMI.Hover := Hover := !Hover)]
 return
 
 ShowGui:
-gui, %HwndSettings%:show
+Gui, %hWndSettings%:Show
 return
 
 SettingsButtonToTray:
-gui, %HwndSettings%: hide
+Gui, %hWndSettings%:Hide
 return
 
-; #############################################################################
-
-; high precision sleep, high cpu usage
-
-preciseSleep( ms := 10 )
-{
-	; thank you nuj! https://www.reddit.com/r/AutoHotkey/comments/c2937u/accurate_sleep/
-	
-	static freq
-	if !freq
-		dllCall( "QueryPerformanceFrequency", "Int64*", freq )
-	dllCall( "QueryPerformanceCounter", "Int64*", before )
-	while ( ( ( after - before ) / freq * 1000 ) < ms )
-		dllCall("QueryPerformanceCounter", "Int64*", after )
-	return  ( ( after - before ) / freq * 1000 ) 
+Tooltip(Strg, TimeOut:=1500) {
+	Tooltip % Strg
+	setTimer, RemoveTooltip, % -TimeOut
 }
 
-; #############################################################################
-
-sleep( ms )
-{
-	sleep % ms
-}
-
-; #############################################################################
-
-settingstooltip( strg, timeout := 1500 )
-{
-	tooltip % strg
-	sleep, % timeout
-	tooltip
-}
-
-; #############################################################################
+RemoveTooltip:
+Tooltip
+return
