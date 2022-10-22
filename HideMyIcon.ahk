@@ -3,7 +3,7 @@
 ; Author:    Bence Markiel (bceenaeiklmr)
 ; Github:    https://github.com/bceenaeiklmr/HideMyIcon
 ; Date       22.10.2022
-; Version    0.0.2
+; Version    0.0.3
 
 #SingleInstance, Force
 #Persistent
@@ -54,6 +54,7 @@ Gui, Settings:Add, CheckBox, % "x20 y260 vHover gHover Checked" (Hover:=HMI.Hove
 Gui, Settings:Add, text,     % "x20 y280 w260 vHoverText"
 ; Buttons
 Gui, Settings:Add, Button,   % "x100 y310 w100", % "&Save"
+Gui, Settings:Add, Button,   % "x100 y340 w100", % "&ToTray"
 ; load from ini
 GuiControl,, EffectSlider, % HMI.IniSpeed
 GuiControl,, EffectUpDown, % HMI.IniSpeed
@@ -62,10 +63,11 @@ GuiControl,, SleepUpDown,  % HMI.Sleep
 Guicontrol,, HoverText,    % HoverText[HMI.Hover]
 Gui, submit
 ; Show options
-Gui, Settings:Show, % "w300 h350", % "HideMyIcon"
+Gui, Settings:Show, % "w300 h370", % "HideMyIcon"
 Menu, Tray, Standard
 Menu, Tray, Add
 Menu, Tray, Add, Show &GUI, ShowGui
+Menu, Tray, Add, To &Tray, SettingsButtonToTray
 return
 
 ; ######################
