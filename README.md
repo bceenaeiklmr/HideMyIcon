@@ -12,12 +12,12 @@ This simple script helps me to control the visibility of the icons in Windows 10
 
 *( does not work properly on Windows 11 )*
 
-- 22.10.2022 - update to v.0.0.2.
+- 22.10.2022 - update to v.0.0.3.
 
 ## Download
 
 - ahk file  [HideMyIcon.ahk](https://github.com/bceenaeiklmr/HideMyIcon/blob/main/HideMyIcon.ahk)
-- exe file: [HideMyIcon_v0.0.2.zip](https://github.com/bceenaeiklmr/HideMyIcon/files/9844449/HideMyIcon_v0.0.2.zip)
+- exe file: [HideMyIcon_v0.0.3.zip](https://github.com/bceenaeiklmr/HideMyIcon/files/9844590/HideMyIcon_v0.0.3.zip)
 
 The script will create an ini file, you can move these files to another folder.
 
