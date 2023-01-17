@@ -12,7 +12,8 @@ This simple script helps me to control the visibility of the icons in Windows 10
 
 *( does not work properly on Windows 11 )*
 
-- 22.10.2022 - update to v.0.0.3.
+- 17.01.2023 - update to v0.4, AHK v2 support, standalone function without GUI
+- 22.10.2022 - update to v.0.0.3. (0.3)
 
 ## Download
 
