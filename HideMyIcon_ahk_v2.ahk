@@ -8,6 +8,8 @@
 #Requires AutoHotkey >=2.0
 #Warn
 
+SetTimer(HideMyIcon.Bind(1, 15, 20), 10)
+
 /*
     ; Hover: effect triggered by clicking (0) or hovering (1)
     ; Speed: 1 (frames 256), 3 (86), 5 (52), 15 (18), 17 (16), 51 (6), 85 (4), 255 (2)
@@ -17,7 +19,7 @@
     ;   SetTimer(HideMyIcon.Bind(1, 15, 20), 10) 
     ;   SetTimer(HideMyIcon.Bind(1, 51,  0), 10)
     ;   SetTimer(HideMyIcon.Bind(0, 85,  0), 10)
-    ;   SetTimer(HideMyIcon.Bind(0, 255,  0), 10)
+    ;   SetTimer(HideMyIcon.Bind(0, 255, 0), 10)
 */
 HideMyIcon(Hover := 0, Speed := 17, Delay := 16.67) {
 
