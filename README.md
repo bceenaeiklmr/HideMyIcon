@@ -10,9 +10,7 @@ When I use multi-monitor setups I get easily annoyed by the icons by just seeing
 
 This simple script helps me to control the visibility of the icons in Windows 10.
 
-*( does not work properly on Windows 11 )*
-
-- 17.01.2023 - update to v0.4, AHK v2 support, standalone function without GUI
+- 17.01.2023 - update to v0.4, AHK v2 support, standalone function without GUI (this version should work on Windows 11)
 - 22.10.2022 - update to v.0.0.3. (0.3)
 
 ## Download
