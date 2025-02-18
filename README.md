@@ -2,20 +2,21 @@
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/uZNI1G8OB9M/0.jpg)](https://www.youtube.com/watch?v=uZNI1G8OB9M)
 
-*A short video how does it look like in real time.*
+*A short video how does it look like in real-time.*
 
-HideMyIcon is an Autohotkey script to auto-hide the desktop icons in Windows 10. It also offers a customizable fading effect.
+HideMyIcon is an AutoHotkey script to auto-hide the desktop icons in Windows 10. It also offers a customizable fading effect.
 
 When I use multi-monitor setups I get easily annoyed by the icons by just seeing them from my peripheral view.
 
 This simple script helps me to control the visibility of the icons in Windows 10+.
 
+- 18.02.2025 - update to v0.5.0, Windows11 compatibility, refactored code
 - 17.01.2023 - update to v0.4, AHK v2 support, standalone function without GUI (this version should work on Windows 11)
 - 22.10.2022 - update to v.0.0.3. (0.3)
 
 ## Download
 
-- ahk file  [HideMyIcon.ahk](https://github.com/bceenaeiklmr/HideMyIcon/blob/main/HideMyIcon.ahk)
+- ahk file: [HideMyIcon.ahk](https://github.com/bceenaeiklmr/HideMyIcon/blob/main/HideMyIcon.ahk) (latest)  
 - exe file: [HideMyIcon_v0.0.3.zip](https://github.com/bceenaeiklmr/HideMyIcon/files/9844590/HideMyIcon_v0.0.3.zip)
 
 The script will create an ini file, you can move these files to another folder.
