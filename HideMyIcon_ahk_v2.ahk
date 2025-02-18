@@ -2,7 +2,7 @@
 ; License:   MIT License
 ; Author:    Bence Markiel (bceenaeiklmr)
 ; Github:    https://github.com/bceenaeiklmr/HideMyIcon
-; Date       18.02.2024
+; Date       18.02.2025
 ; Version    0.5.0
 
 #Requires AutoHotkey v2
