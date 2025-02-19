@@ -1,44 +1,43 @@
 # HideMyIcon
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/uZNI1G8OB9M/0.jpg)](https://www.youtube.com/watch?v=uZNI1G8OB9M)
+HideMyIcon is an AutoHotkey script to auto-hide the desktop icons in Windows 11. It also offers a customizable fading effect.
 
-*A short video how does it look like in real-time.*
+When I use multi-monitor setups, I get annoyed by the icons by just seeing them from my peripheral view.
 
-HideMyIcon is an AutoHotkey script to auto-hide the desktop icons in Windows 10. It also offers a customizable fading effect.
-
-When I use multi-monitor setups I get easily annoyed by the icons by just seeing them from my peripheral view.
-
-This simple script helps me to control the visibility of the icons in Windows 10+.
-
-- 18.02.2025 - update to v0.5.0, Windows11 compatibility, refactored code
-- 17.01.2023 - update to v0.4, AHK v2 support, standalone function without GUI (this version should work on Windows 11)
-- 22.10.2022 - update to v.0.0.3. (0.3)
+This simple script helps me to control the visibility of the icons in Windows 11.
 
 ## Download
 
-- ahk file: [HideMyIcon.ahk](https://github.com/bceenaeiklmr/HideMyIcon/blob/main/HideMyIcon.ahk) (latest)  
-- exe file: [HideMyIcon_v0.0.3.zip](https://github.com/bceenaeiklmr/HideMyIcon/files/9844590/HideMyIcon_v0.0.3.zip)
+- ahk file: [HideMyIcon.ahk](https://github.com/bceenaeiklmr/HideMyIcon/blob/main/HideMyIcon.ahk) (standalone)
+- ahk file: [HideMyIcon_Gui.ahk](https://github.com/bceenaeiklmr/HideMyIcon/blob/main/HideMyIcon_Gui.ahk) (GUI, requires HideMyIcon.ahk)
+- exe file: [HideMyIcon_Gui.zip](https://github.com/user-attachments/files/18874544/HideMyIcon_Gui.zip) (standalone exe)
 
-The script will create an ini file, you can move these files to another folder.
+## Youtube video
 
-![HideMyIcon_2](https://user-images.githubusercontent.com/105103590/197341249-71cafb87-b5da-458f-8040-95fc2d1c9a42.png)
-
-*a quick comparison with and without the icons*
+[![HideMyIcon Youtube video](https://img.youtube.com/vi/uZNI1G8OB9M/0.jpg)](https://www.youtube.com/watch?v=uZNI1G8OB9M)
 
 ## Features
 
-- basic gui to configure the settings
-- smooth fade in/out effect
-- eight different effect detail options
-- sleep duration can be set between two transparency states
-- hover/click mode to trigger the effect
-- invisible icons are clickable, movable
-- show desktop button should work properly by now
-- ini files to remember settings
-- exiting the script will turn off the effect (restores the icons)
+▪ basic GUI to configure the settings  
+▪ smooth, configurable fade in/out effect  
+▪ eight different effect detail options  
+▪ sleep duration can be set between two transparency states  
+▪ hover/click mode to trigger the effect  
+▪ invisible icons are clickable, movable  
+▪ show desktop button works as expected  
+▪ ini files to remember settings  
+▪ exiting the script will turn off the effect (restores the icons)  
+▪ should be backward compatible with Win10  
+    
+  ![HideMyIcon_GUI](https://github.com/user-attachments/assets/a4541765-aa1e-40fb-9ac9-b7eeed9ab66c)
 
-![HideMyIcon_1](https://user-images.githubusercontent.com/105103590/197339864-88011fdc-9dee-4270-afe0-7ee794cc7e27.png)
+## Comparison
+![HideMyIcon_comparison](https://user-images.githubusercontent.com/105103590/197341249-71cafb87-b5da-458f-8040-95fc2d1c9a42.png)
 
-## Bugs
+## History
 
-Please note that I only tested it on two computers so far. Bugs may occur.
+▪ 19.02.2025 - v0.5.2  - Fixed bug for Click mode  
+▪ 19.02.2025 - v0.5.1  - GUI recreated in AHK v2  
+▪ 18.02.2025 - v0.5.0  - Windows11 compatibility, refactored code  
+▪ 17.01.2023 - v0.4.0   - AHK v2 support, standalone function without GUI  
+▪ 22.10.2022 - v0.0.3 - AHK v1 version (deprecated)
