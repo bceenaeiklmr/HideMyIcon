@@ -1,15 +1,16 @@
-; Script     HideMyIcon_ahk_v2.ahk
+; Script     HideMyIcon.ahk
 ; License:   MIT License
 ; Author:    Bence Markiel (bceenaeiklmr)
 ; Github:    https://github.com/bceenaeiklmr/HideMyIcon
-; Date       18.02.2025
-; Version    0.5.0
+; Date       19.02.2025
+; Version    0.5.1
 
 #Requires AutoHotkey v2
 #SingleInstance Force
 #Warn
 
-SetTimer(HideMyIcon.Bind(1, 17, 0), 20)
+fn := HideMyIcon.Bind(1, 17, 0)
+SetTimer(fn, 20)
 
 /**
  * Controls the transparency of an icon based on user interaction.
@@ -35,22 +36,22 @@ SetTimer(HideMyIcon.Bind(1, 17, 0), 20)
 HideMyIcon(change_on_hover := 0, step_size := 17, delay := 16.67) {
 
     static TRANSPARENT_MIN := 1, TRANSPARENT_MAX := 255
-    static transparent := 255
-    static hdesk, hicon    
+    static hdesk, hicon, transparent 
     static init := False
     
-    if !init {
+    if (!init) {
         if (step_size < 1 || step_size > 255)
             throw("Step size must be between 1 and 255.")
 
         ; Get the handle of the desktop and its' icons
-        if !hdesk := WinExist("ahk_class Progman")
-            if !hdesk := WinExist("ahk_class WorkerW")
+        if (!hdesk := WinExist("ahk_class Progman"))
+            if (!hdesk := WinExist("ahk_class WorkerW"))
                 hdesk := WinExist("Shell_TrayWnd")
         hicon := ControlGetHwnd("SysListView321", hdesk)
-        
+
         ; Register the restore function on exit
         OnExit((*) => WinSetTransparent(TRANSPARENT_MAX, hicon))
+        transparent := TRANSPARENT_MAX
         init := True
     }
 
@@ -75,7 +76,7 @@ HideMyIcon(change_on_hover := 0, step_size := 17, delay := 16.67) {
     ; Determine the direction of the change
     if (mouse_pos ~= "TrayShowDesktopButton|StartMenu|Taskbar")
         change := 1
-    else if !change_on_hover
+    else if (!change_on_hover)
         change := (WinActive(hdesk) || WinActive("ahk_class Shell_TrayWnd")) ? 1 : -1
     else
         change := (mouse_pos) ? 1 : -1
@@ -95,7 +96,7 @@ HideMyIcon(change_on_hover := 0, step_size := 17, delay := 16.67) {
         WinSetTransparent(transparent, hicon)
     
     ; Add delay
-    if delay
+    if (delay)
         Sleep(delay)
     return
 }
