@@ -3,7 +3,7 @@
 ; Author:    Bence Markiel (bceenaeiklmr)
 ; Github:    https://github.com/bceenaeiklmr/HideMyIcon
 ; Date       19.02.2025
-; Version    0.5.1
+; Version    0.5.2
 
 #Warn
 #include HideMyIcon.ahk
