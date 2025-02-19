@@ -3,7 +3,7 @@
 ; Author:    Bence Markiel (bceenaeiklmr)
 ; Github:    https://github.com/bceenaeiklmr/HideMyIcon
 ; Date       19.02.2025
-; Version    0.5.1
+; Version    0.5.2
 
 #Requires AutoHotkey v2
 #SingleInstance Force
@@ -64,13 +64,18 @@ HideMyIcon(change_on_hover := 0, step_size := 17, delay := 16.67) {
         MouseGetPos(,, &id, &ctrl)
         cls := WinGetClass(id)
         wnd := WinGetTitle(id)
-    } 
+    }
+
+    ; Click mode requires further detection
+    active_desk := !change_on_hover ? WinActive(hdesk) : 1
+    active_tray := !change_on_hover ? WinActive("ahk_class Shell_TrayWnd") : 1
     
-    ; Determine the mouse position by the window class, title, and control
-    mouse_pos := ((ctrl ~= "TrayShowDesktopButton") ? "TrayShowDesktopButton"
+    ; Determine the mouse position
+    try
+    mouse_pos := ((ctrl ~= "TrayShowDesktopButton" && active_desk) ? "TrayShowDesktopButton"
                : (cls ~= "Progman|WorkerW" && wnd == "") ? "StartMenu"
-               : (cls ~= "Progman|WorkerW") ? "Desktop"
-               : (cls ~= "Shell_TrayWnd") ? "Taskbar"
+               : (cls ~= "Progman|WorkerW" && active_desk) ? "Desktop"
+               : (cls ~= "Shell_TrayWnd" && active_tray) ? "Taskbar"
                : (cls ~= "DFTaskbar") ? "DisplayFusion" : "")
 
     ; Determine the direction of the change
